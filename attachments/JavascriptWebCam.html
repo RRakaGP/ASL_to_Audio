@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ASL-to-Audio-Convertor</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://api.jquery.com/jQuery.ajax/"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body onload="onLoad()">
+
+    <style>
+       /*#Lower_part {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: floralwhite;
+        }*/
+        body{
+            background-color: black;
+        }
+
+        .mainsection {
+            /*width: 55%;
+            height: 65%;*/
+            display: block;
+            /*margin-left: auto;
+            margin-right: auto;*/
+            background-color: black;
+            color: white;
+        }
+
+        #Upper_part {
+            background-color: white;
+            width: 100%;
+            text-align: center;
+
+        }
+        #cameraStream {
+            margin-left: 330px;
+            margin-top: 2%
+        }
+
+        /*#CamButton{
+            position: absolute;
+            margin-top: 500px;
+            margin-left: 650px;
+        }*/
+        
+        #Ins,#para{
+            background-color: black;
+        }
+        #para,#Tamil,#Hindi,#Telugu,#Malayalam{
+            margin-left: 340px;
+        }
+
+        .btn{
+            background-color: white;
+            color: black;
+        }
+
+        .btn-primary:hover {
+            background-color:#fec8d8;
+             color: black;
+}
+    </style>
+
+        <marquee behavior = "alternate" direction = "left" scrollamount = "10" id = "what_lang" style = "color: white; font-size: 20px; margin-top: 2%;
+        background-color: black;"></marquee>
+    
+        <img class="mainsection" id="cameraStream" alt="this is how you use the app">
+        <br>
+        <div id="instructions" class="mainsection">
+            <div id = "Upper_part">
+                <img src="{{url_for('static',filename = 'A.jpg')}}" width = 150px height = 150px style="margin-top: 8px;">
+                <img src="{{url_for('static',filename = 'S.jpg')}}" width = 150px height = 150px style = "margin-left: 10%; margin-top: 8px;">
+                <img src="{{url_for('static',filename = 'L.jpg')}}" width = 150px height = 150px style = "margin-left: 10%; margin-top: 8px;">
+                
+                <h1 style="height: 15%; text-align: center; color: black" ><b>American Sign Language to Speech</b></h1>
+            </div>
+            <div id = "Ins">
+                <h3 style="height: 10%; text-align: center; color: #fec8d8; font-weight: bold;" id = "Ins">~Instructions~</h3>
+                <li id = "para">Click the button to open your camera again to continue translating you signs to speech.</li>
+                <li id = "para">Make sure to avoid as much as noisy background as possible by bringing your hand close to the camera.</li>
+                <li id = "para">Note: The accuracy of the predictions are not desirable.</li><br>
+            
+            <p style= "font-size: 16px; font-weight: bold; margin-left: 340px; font-style: oblique; text-decoration: underline; ">Select desired language to translate to (Default Language - 'English')</p>
+            <input type = "checkbox" id = "Tamil" value = "Tamil" class = "Lang_Name">
+            <label for = "Tamil">TAMIL</label><br>
+            <input type = "checkbox" id = "Hindi" value = "Hindi" class  = "Lang_Name">
+            <label for = "Hindi">HINDI</label><br>
+            <input type = "checkbox" id = "Telugu" value = "Telugu" class = "Lang_Name">
+            <label for = "Telugu">TELUGU</label><br>
+            <input type = "checkbox" id = "Malayalam" value = "Malayalam" class = "Lang_Name">
+            <label for = "Malayalam">MALAYALAM</label>
+
+            <div class="text-center" id='CamButton'>
+                <button class="btn btn-primary" onclick="openCam()" id = "buttonid">Click to open camera</button>
+            </div>
+        </div>
+        </div>
+    
+    
+
+
+    <!-- right section -->
+   <!-- <div id="content" class="text-center">
+        <p id="p" style="margin-top: 38%; color: black; font-size: 50px;">
+        </p> 
+    </div>-->
+
+    <script>
+        $('.Lang_Name').on('change', function() {
+		    $('.Lang_Name').not(this).prop('checked', false);  
+		});
+
+        function onLoad() {
+            console.log("ON LOAD")
+            cam = document.getElementById("cameraStream")
+            cam.style.display = "none";
+            
+        }
+
+        function openCam() {
+
+            document.body.style.backgroundImage = "url('{{url_for('static',filename = 'B.jpg')}}')";
+            document.body.style.backgroundColor = "#2f2f2f";
+            document.body.style.backgroundSize = "contain";
+            var tamil = document.getElementById("Tamil");
+            var hindi = document.getElementById("Hindi");
+            var telugu = document.getElementById("Telugu");
+            var malayalam = document.getElementById("Malayalam");
+            
+            var lang_code = "English"
+
+            if (tamil.checked == true){  
+                lang_code = document.getElementById("Tamil").value;  
+            }
+            else if (hindi.checked == true){  
+                lang_code = document.getElementById("Hindi").value;  
+            }
+            else if (telugu.checked == true){  
+                lang_code = document.getElementById("Telugu").value;  
+            }
+            else if (malayalam.checked == true){  
+                lang_code = document.getElementById("Malayalam").value;  
+            }
+
+            document.getElementById("what_lang").innerHTML = "SIGN LANGUAGE IS BEING TRANSLATED TO " + lang_code.toUpperCase();
+            camButton = document.getElementById("CamButton");
+            camButton.style.display = 'none'
+
+            //output = document.getElementById("p") 
+            //output.style.display = "none";
+
+            cam = document.getElementById("cameraStream")
+            ins = document.getElementById("instructions");
+            if (ins.style.display === "none") {
+                ins.style.display = "block";
+                cam.style.display = "none";
+                //output.style.display = "block";
+            } else {
+                ins.style.display = "none";
+                cam.style.display = "block";
+                //output.style.display = "none";
+            }
+
+            console.log(lang_code)  
+            var msg = new SpeechSynthesisUtterance();
+
+            $.ajax({
+                type: "POST",
+                url : "/get_lang",
+                contentType: "application/json",
+                data: JSON.stringify({lang_code}),
+                dataType: "json",
+            });
+
+          
+
+            cam.setAttribute("src", "/video")
+
+
+            //output.setAttribute("src", "/output")
+
+            /*fetch("http://127.0.0.1:5000/res", {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            }).then(function (response) {
+                return response.json();
+            }).then(function (res) {
+                cam.removeAttribute("src")
+                let p = document.getElementById("p").innerHTML = res
+                msg.text = res;
+                window.speechSynthesis.speak(msg);
+                ins.style.display = "block";
+                cam.style.display = "none";
+                camButton.style.display = 'block';
+            });*/
+        }
+    </script>
+</body>
+
+</html>
